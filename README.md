@@ -9,3 +9,4 @@ A little about me:
 - I am interested in learning about ....
 
 A meme that captures how I currently feel about my university studies is ![](https://c.tenor.com/8druEACXtX8AAAAd/tenor.gif)
+<img width="640" height="600" alt="image" src="https://github.com/user-attachments/assets/0f8f0426-2c66-4481-9cdc-8c5240fac115" />
