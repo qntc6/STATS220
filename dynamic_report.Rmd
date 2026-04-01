@@ -6,22 +6,102 @@ output: html_fragment
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
 
+library(tidyverse)
+csv_url <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vSTqLztmVx6yPNjSc9U15Mf7l1Gf6RCFr_NoYW49GvEhBULljUHnVZwvjuIsMYDkTDnoQ6VVrX6iFOc/pub?output=csv"
+
+logged_data <- read_csv(csv_url)
+
+names(logged_data)
+
+latest_data <- logged_data %>%
+  rename(
+    timestamp = Timestamp,
+   Yes_or_No = `Did you play computer games today?`,
+    videogame_hours = `How much time do you spend playing games (hours)?`,
+    game_type = `What game did you play today?`,
+  )
+
+top_YesNo <- latest_data %>%
+  count(Yes_or_No, sort = TRUE) %>%
+  slice(1) %>%
+  pull(Yes_or_No)
+
+mean_hours <- latest_data %>%
+  summarise(mean_hours = mean(videogame_hours), na.rm = TRUE) %>%
+  pull(mean_hours)
+
+top_game <- latest_data %>%
+  count(game_type, sort = TRUE) %>%
+  slice(1) %>%
+  pull(game_type)
+
+
 ```
 
 ```{css}
+body {
+  background-color: #00045E;
+  font-family: Arial, sans-serif;
+  color: #DEF3FA;
+  padding: 35px;
+}
+
+h2 {
+  color: #CFE8FF;
+  border-bottom: 2px solid #CFE8FF;
+  padding-bottom: 2px;
+  font-size: 40px;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+img {
+  border-radius: 10px;
+}
 
 ```
 
-## What's going on with this data?
+## Video game habit observation logging report
+I have summarized the data collected from my survey into a report interpreting gaming patters, habits and preferences.
 
-You need to change the contents of this Rmd! Replace the R code and markdown give below in this template document.
+According to my survey, the most of my respondents said **`r top_YesNo`** to playing games in a day.
+
+Where they spend an average of **`r round(mean_hours, 2)` hours** on gaming a day.
 
 ```{r}
-pets <- c("cat", "dog", "turtle", "rabbit")
-best_pet <- pets[1]
-
+ggplot(latest_data, aes(x = Yes_or_No)) +
+  geom_bar(aes(fill = Yes_or_No)) +
+  labs(
+    title = "Did people play games that day",
+    x = "Yes or No",
+    y = "Count"
+  ) +
+  scale_fill_manual(values = c("Yes" = "#00C40D", "No" = "#FA2D2D")) +
+  theme_minimal() +
+theme(
+    plot.title = element_text(size = 20)
+  )
 ```
 
-The best pet to have is a `r best_pet` of course!
 
-![](https://c.tenor.com/-qBsG1HwR4oAAAAC/tenor.gif)
+
+With the most common/top played game being **`r top_game`** as shown below.
+
+```{r}
+ggplot(latest_data, aes(x = game_type)) +
+  geom_bar(fill = "#7600C4") +
+  labs(
+    title = "Most Common Game played",
+    x = "game type",
+    y = "Count"
+  ) +
+  theme_minimal() +
+theme(
+    plot.title = element_text(size = 20)
+  )
+```
+
+
